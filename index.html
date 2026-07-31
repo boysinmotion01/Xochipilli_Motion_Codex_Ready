@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <title>Living Growth — Xochipilli</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="stage" aria-label="Interactive growth canvas"></canvas>
+  <button class="controls-toggle" id="controlsToggle" aria-controls="panel" aria-expanded="true">Hide</button>
+
+  <main class="panel" id="panel">
+    <header>
+      <div>
+        <p class="eyebrow">Xochipilli visual instrument</p>
+        <h1>Living Growth</h1>
+      </div>
+      <div class="pulse" id="pulse" title="Performance status"></div>
+    </header>
+    <p class="invitation" id="invitation">Touch the dark to begin, or let the roots find their own path.</p>
+
+    <section class="worlds" aria-label="Growth worlds">
+      <button class="world active" data-preset="roots">Roots</button>
+      <button class="world" data-preset="cracks">Cracks</button>
+      <button class="world" data-preset="flowers">Bloom</button>
+      <button class="world" data-preset="grid">Grid</button>
+      <button class="world" data-preset="dust">Dust</button>
+      <button class="world" data-preset="image">Image</button>
+    </section>
+
+    <section class="primary-actions">
+      <button class="primary" id="auto">Grow</button>
+      <button id="variation">New variation</button>
+      <button id="clear">Clear</button>
+    </section>
+
+    <section class="controls">
+      <label>Energy <output id="speedVal"></output>
+        <input id="speed" type="range" min=".25" max="3.5" step=".05">
+      </label>
+      <label>Abundance <output id="densityVal"></output>
+        <input id="density" type="range" min="1" max="12" step="1">
+      </label>
+      <label>Wildness <output id="wildnessVal"></output>
+        <input id="wildness" type="range" min="0" max="1.5" step=".01">
+      </label>
+      <label>Glow <output id="glowVal"></output>
+        <input id="glow" type="range" min="0" max="24" step="1">
+      </label>
+    </section>
+
+    <section class="switch-row">
+      <button id="mirror">Mirror</button>
+      <button id="pause">Pause</button>
+      <button id="fullscreen">Fullscreen</button>
+    </section>
+
+    <label class="upload" id="uploadWrap">
+      <span>Use your own image</span>
+      <input id="imageUpload" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+    </label>
+
+    <details>
+      <summary>Capture & performance</summary>
+      <div class="details-body">
+        <div class="capture-row">
+          <button id="save">Save still</button>
+          <button id="record"><i id="recDot"></i><span id="recordLabel">Record loop</span></button>
+        </div>
+        <div class="compact-grid">
+          <label>Loop
+            <select id="duration">
+              <option value="6">6 seconds</option>
+              <option value="10" selected>10 seconds</option>
+              <option value="15">15 seconds</option>
+              <option value="30">30 seconds</option>
+            </select>
+          </label>
+          <label>Frame
+            <select id="recordSize">
+              <option value="1280x720" selected>1280 × 720</option>
+              <option value="1920x1080">1920 × 1080</option>
+              <option value="current">Current screen</option>
+            </select>
+          </label>
+          <label>Recording
+            <select id="recordFps">
+              <option value="30" selected>30 fps</option>
+              <option value="60">60 fps</option>
+            </select>
+          </label>
+          <label>Performance
+            <select id="quality">
+              <option value="auto" selected>Automatic</option>
+              <option value="mobile">Mobile</option>
+              <option value="balanced">Balanced</option>
+              <option value="projection">Projection</option>
+            </select>
+          </label>
+        </div>
+        <label class="check"><input id="repeatable" type="checkbox" checked> Repeatable variation</label>
+        <label class="check"><input id="diagnostics" type="checkbox"> Show diagnostics</label>
+      </div>
+    </details>
+
+    <div class="message" id="message" role="status" aria-live="polite">Ready</div>
+  </main>
+  <div class="diagnostic" id="diagnostic" hidden>60 fps · 0 forms</div>
+
+  <script src="presets.js"></script>
+  <script src="simulation.js"></script>
+  <script src="renderer.js"></script>
+  <script src="export.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
