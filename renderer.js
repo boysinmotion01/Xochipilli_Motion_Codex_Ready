@@ -21,17 +21,39 @@ class GrowthRenderer{
     const c=this.color(a.t,.5),ctx=this.tctx,d=this.dpr,mode=s.mode;
     ctx.globalCompositeOperation="lighter";ctx.shadowBlur=s.glow*d*this.glowScale;ctx.shadowColor=c;
     const event=Math.floor(a.age/13);
-    if(mode==="flowers"&&event!==a.lastEvent){
-      a.lastEvent=event;
-      const petals=6+(a.seed|0)%4,rad=(2+r()*6)*d*s.scale;ctx.fillStyle=c;
-      ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.angle);
-      for(let i=0;i<petals;i++){ctx.rotate(Math.PI*2/petals);ctx.beginPath();ctx.ellipse(rad,0,rad*.9,rad*.3,0,0,Math.PI*2);ctx.fill()}
-      ctx.restore();return
+    if(mode==="flowers"){
+      const interval=34+(a.seed|0)%28,bloomEvent=Math.floor(a.age/interval);
+      if(bloomEvent!==a.lastEvent&&bloomEvent>0){
+        a.lastEvent=bloomEvent;
+        const petals=5+(a.seed|0)%5,rad=(2.8+r()*4.6)*d*s.scale;
+        ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.angle+r()*.7-.35);
+        for(let i=0;i<petals;i++){
+          const petalColor=this.color((a.t+i/petals*.22)%1,.38+r()*.2);
+          ctx.rotate(Math.PI*2/petals);ctx.fillStyle=petalColor;ctx.beginPath();
+          ctx.ellipse(rad*.82,0,rad*(.68+r()*.18),rad*(.18+r()*.13),0,0,Math.PI*2);ctx.fill()
+        }
+        ctx.fillStyle=this.color(1-a.t,.82);ctx.beginPath();ctx.arc(0,0,Math.max(1.1*d,rad*.2),0,Math.PI*2);ctx.fill();
+        ctx.restore()
+      }
     }
     if(mode==="particles"){ctx.fillStyle=c;ctx.beginPath();ctx.arc(a.x,a.y,(.7+r()*2.5)*d*s.scale,0,Math.PI*2);ctx.fill();return}
-    if(mode==="image"&&this.image&&event!==a.lastEvent){
-      a.lastEvent=event;
-      const size=(18+r()*45)*d*s.scale;ctx.save();ctx.globalAlpha=.12+r()*.2;ctx.translate(a.x,a.y);ctx.rotate(a.angle);ctx.drawImage(this.image,-size/2,-size/2,size,size);ctx.restore();return
+    if(mode==="image"){
+      if(!this.image)return;
+      const interval=22+(a.seed|0)%24,imageEvent=Math.floor(a.age/interval);
+      if(imageEvent!==a.lastEvent&&imageEvent>0){
+        a.lastEvent=imageEvent;
+        const iw=this.image.naturalWidth||this.image.width,ih=this.image.naturalHeight||this.image.height;
+        const unit=Math.abs(Math.sin(a.seed*12.9898+imageEvent*78.233));
+        const sw=Math.max(24,iw*(.12+unit*.16)),sh=Math.max(24,ih*(.12+(1-unit)*.16));
+        const sx=Math.max(0,(iw-sw)*Math.abs(Math.sin(a.seed*.071+imageEvent*.91)));
+        const sy=Math.max(0,(ih-sh)*Math.abs(Math.cos(a.seed*.053+imageEvent*1.17)));
+        const dw=(24+r()*54)*d*s.scale,dh=dw*(sh/sw);
+        ctx.save();ctx.globalCompositeOperation="source-over";ctx.globalAlpha=.2+r()*.22;
+        ctx.translate(a.x,a.y);ctx.rotate(a.angle+(r()-.5)*.7);ctx.beginPath();
+        ctx.ellipse(0,0,dw*.5,dh*.5,0,0,Math.PI*2);ctx.clip();
+        ctx.drawImage(this.image,sx,sy,sw,sh,-dw/2,-dh/2,dw,dh);ctx.restore()
+      }
+      return
     }
     if(mode==="grid"){
       const z=Math.max(7*d,12*d*s.scale),x=Math.round(a.x/z)*z,y=Math.round(a.y/z)*z;
